@@ -40,13 +40,19 @@ The tools are integrated in the following way:
 	        	'\			''''''''''''				'			'					
 			' \								'
 			' \								'
-			'  \	   common.sh	''''''''''''				'			'
-			'   \----->node.sh --->	'   Node02--->-> Docker Conatiner  <-<----'			'
+			'  \	   common.sh	''''''''''''				'			'             (｡◕‿◕｡)
+			'   \----->node.sh --->	'   Node02--->-> Docker Conatiner  <-<----'			'	
+																CLOUDWATCH
 			'			''''''''''''	    (MySQL)					'
 	 		'											'
 			'______________________________________________________________________________________	'
-		
-### 2.Execution Steps
+												'			-------------------
+												'		    	   𝗔𝗨𝗚𝗨𝗦𝗧 – 𝟮𝟬𝟮𝟮	
+												'			 🅇|𝟢𝟣|𝟢𝟤|𝟢𝟥|𝟢𝟦|𝟢𝟧|𝟢𝟨
+												'------------->		--------------------
+														 Application Code Management with Git	
+				
+### 2.Execution Steps						
 
 The project has a terraform file called create-infra.tf that will create 3 nodes in the AWS. Once the nodes are created the provisioner module of the terraform provisions 2 bash scripts in each node. The table below summarizes this architecture. The terffaorm script would not run this scripts. 
 | IP           | Hostname | Componets                                | Scripts|
