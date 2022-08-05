@@ -8,7 +8,8 @@ Project/Assignment - 5 Days
 DevOps Project/Assignment	Topics with Hands-on Lab	
 Activity - 5 Days	
 ----------------------------------------------------------
-    	1. Three Tier web application using docker and Kubernetes 
+    	
+	1. Three Tier web application using docker and Kubernetes 
 	
 	2. Infrastructure as Code Using Terraform (Modules)	
 	
