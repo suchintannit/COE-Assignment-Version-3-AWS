@@ -94,13 +94,7 @@ The resources and the cluster created can be destroyed by executing the followin
 ### 5. Troubleshoot Execution.
 Do a vagrant up the first time you execute. Let the process complete in one go. If it gets stuck then close the VMs from virtualbox and then do the follwoing options from the root folder.
 
-	PS>vagrant reload --provision
-
-	If there are errors then execute:
-
-	PS> vagrant halt -f
-	
-	PS> vagrant up --provision
+	PS>terraform destroy
 	
 ### Why Bash Scripts for Automation ?
 
