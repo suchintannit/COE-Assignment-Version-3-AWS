@@ -1,13 +1,12 @@
 
-## Creation of a AWS cluster on AWS using Terraform-Ansible-Scripts-Kubernetes-Jenkins-Git
+## Creation of a Multi-tier app on AWS using Terraform-Ansible-Scripts-Kubernetes-Jenkins-Git
 
 #### Dr. Suchintan Mishra [suchintan_mishra@epam.com]
 
 #### Problem Statement:
-Project/Assignment - 5 Days		
+	Project/Assignment - 5 Days		
 		
-DevOps Project/Assignment	Topics with Hands-on Lab	
-Activity - 5 Days	
+	Topics with Hands-on Lab		
 ----------------------------------------------------------
     	
 	1. Three Tier web application using docker and Kubernetes 
