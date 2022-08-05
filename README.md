@@ -3,7 +3,7 @@
 
 #### Dr. Suchintan Mishra [suchintan_mishra@epam.com]
 
-#### Problem Statement:
+#### Problem Statement: Multi-tier App in DevOps-Candidate should be able to handle all stages of DevOps Independently
 	Project/Assignment - 5 Days		
 		
 			
