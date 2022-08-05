@@ -249,3 +249,14 @@ Finally the worker.sh file runs in the worker and is responsible to join the wor
 
 	
 ### 7. Conclusions and Limitations:
+
+Using this project a basic understanding of the devops tools and their usage can be made. Having a lot of choice makes things difficult sometimes but it should be kept the following table can help.
+
+	| Technology    | Automation Level          | Alternatives                     | Path in Repo|
+	| ------------- | --------------------      | -------------------------        |----------   |
+	| Vagrant       | Resource Creation         | Terraform, AWS CLOUD Formation   |             |
+	| Terraform     | Resource Creation         | Vagrant, AWS CLOUD FOrmation     |             |
+	|Ansible        | Application deployment    | CHEF, Puppet                     |             |     
+	|Docker         | Application deployment    |                                  |             |             
+	|Kubernetes     | Resource Monitoring       | Kubernetes Charm, AWS EKS        |             |
+
