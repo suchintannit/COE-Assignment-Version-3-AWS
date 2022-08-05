@@ -247,6 +247,7 @@ Finally the worker.sh file runs in the worker and is responsible to join the wor
 	sudo systemctl restart containerd
 ### 6. Monitoring the Cluster:
 
+CloudWatch collects monitoring and operational data in the form of logs, metrics, and events, and visualizes it using automated dashboards
 	
 ### 7. Conclusions and Limitations:
 
