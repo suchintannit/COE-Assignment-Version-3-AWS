@@ -151,11 +151,16 @@ save this file as mysql.yml. Note that the nodeselector property allows us to se
 
 This command invokes the terraform in the project.  Of the 3 nodes, one is the master and will run the kubernetes controller and dashboard. The master node is responsible to run the control plane. The control plane listens to REST API request. The worker nodes01 executes a python to-do docker container while the node02 stores its persitant database through a mysql container. This project demonstrates how a multi container app can be managed by a cluster.
 
-### Ansible
+### Ansible:
 
-### Kubernetes: Kubernetes is a portable, extensible, open source platform for managing containerized workloads and services, that facilitates both declarative configuration and automation. It has a large, rapidly growing ecosystem. Kubernetes services, support, and tools are widely available. Nodes (like VMs) and inside these nodes Pods (like Containers) are executed. Kubernetes works on a master-slave architecture where there is atleast one master and multiple workers.
 
-### Docker containers enable application developers to package software for delivery to testing, and then to the operations team for production deployment. The operations team then has the challenge of running Docker container applications at scale in production. Kubernetes is a tool to run and manage a group of Docker containers. While Docker focuses on application development and packaging, Kubernetes ensures those applications can run at scale.
+### Kubernetes: 
+
+Kubernetes is a portable, extensible, open source platform for managing containerized workloads and services, that facilitates both declarative configuration and automation. It has a large, rapidly growing ecosystem. Kubernetes services, support, and tools are widely available. Nodes (like VMs) and inside these nodes Pods (like Containers) are executed. Kubernetes works on a master-slave architecture where there is atleast one master and multiple workers.
+
+### Docker 
+
+containers enable application developers to package software for delivery to testing, and then to the operations team for production deployment. The operations team then has the challenge of running Docker container applications at scale in production. Kubernetes is a tool to run and manage a group of Docker containers. While Docker focuses on application development and packaging, Kubernetes ensures those applications can run at scale.
 	 	
 	 
 ### 4. Troubleshoot Execution.
@@ -167,9 +172,9 @@ Do a vagrant up the first time you execute. Let the process complete in one go. 
 
 	Delete resources from AWS manually.
 	
-	Note: Try finding your version of aws cli its has been tested on aws 2.7.6 try to match the version by changing the providers module in create-infra.tf
+Note: Try finding your version of aws cli its has been tested on aws 2.7.6 try to match the version by changing the providers module in create-infra.tf
 	
-### Bash Scripts for Automation
+### 5. Bash Scripts for Automation
 
 Bash is a Unix command line interface for interacting with the operating system, available for Linux and macOS. Bash scripts help group commands to create a program. All instructions that run from the terminal work in Bash scripts as well.
 
@@ -177,7 +182,7 @@ Bash scripting is a crucial tool for system administrators and developers. Scrip
 
 You will often encounter shell scripts starting with #! /bin/bash, #! is called a shebang or hashbang. shebang plays an important role in shell scripting, especially when dealing with different types of shells.
 		
-		This is common tools script that installs docker and kubernetes on each node of the cluster and makes sure that they are ready to be added 		   to the cluster
+This is common tools script that installs docker and kubernetes on each node of the cluster and makes sure that they are ready to be added to the cluster
 
   	echo "Starting the Common Tools#############################################\n"
   	sudo apt-get update -y
@@ -201,6 +206,8 @@ You will often encounter shell scripts starting with #! /bin/bash, #! is called 
   	sudo sed -i '/swap/d' /etc/fstab
   	echo "Swap Disabled##############################################"
 	
+This is the 'master.sh' script that creates a control plane on the master node.
+
 	echo "Starting the Kubernetes Cluster on Master Node############################################\n"
   
   	# Start cluster
@@ -233,4 +240,7 @@ Finally the worker.sh file runs in the worker and is responsible to join the wor
 	echo Restart kubelet and containerd
 	sudo systemctl restart kubelet
 	sudo systemctl restart containerd
+### 6. Monitoring the Cluster:
+
 	
+### 7. Conclusions and Limitations:
