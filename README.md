@@ -6,9 +6,10 @@
 #### Problem Statement:
 	Project/Assignment - 5 Days		
 		
-	Topics with Hands-on Lab		
+			
 ----------------------------------------------------------
-    	
+  	Topics with Hands-on Lab:
+  
 	1. Three Tier web application using docker and Kubernetes 
 	
 	2. Infrastructure as Code Using Terraform (Modules)	
