@@ -1,0 +1,86 @@
+---
+  - name: restart apache web server
+    hosts: localhost
+    tasks:
+      - name: Starting the Common Tools
+        become: yes
+        command: "apt-get update -y"
+      - name: Installing Docker
+        become: yes
+        command: "apt-get install -y docker.io"
+      - name: Add an apt signing key for Kubernetes
+        apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+      - name: Adding apt repository for Kubernetes
+        apt_repository:
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+        filename: kubernetes.list
+
+      - name: Install Kubernetes binaries
+        apt: 
+        name: "{{ packages }}"
+        state: present
+        update_cache: yes
+        vars:
+          packages:
+            - kubelet 
+            - kubeadm 
+            - kubectl
+      - name: restartapache
+        become: yes
+        command: "hsudo apt-mark hold kubeadm kubelet kubectl"
+      - name: restartapache
+        become: yes
+        command: "httpd -k restart"
+      - name: restartapache
+        become: yes
+        command: "sudo apt-get install -y ebtables ethtool"
+      - name: restartapache
+        become: false
+        command: "swapoff -a"
+      - name: restartapache
+        become: yes
+        command: "  sed -i '/swap/d' /etc/fstab"
+      - name: restartapache
+        become: yes
+        command: "sudo touch /join.sh"
+      - name: restartapache
+        become: yes
+        command: 'sudo kubeadm init --apiserver-advertise-address=172.31.42.117 --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=all| grep "kubeadm join" > /join.sh'
+      - name: restartapache
+        become: yes
+        command: "mkdir -p $HOME/.kube"   
+      - name: restartapache
+        become: false
+        command: "sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config"
+      - name: restartapache
+        become: yes
+        command: "sudo chown ubuntu:ubuntu $HOME/.kube/config" 
+      - name: Download foo.conf
+        ansible.builtin.get_url:
+          url: https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+          dest: kube-flannel.yml
+          mode: '0440'
+      - name: restartapache
+        become: yes
+        command: "kubectl create -f kube-flannel.yml" 
+      - name: restartapache
+        become: yes
+        command: " sudo systemctl daemon-reload" 
+      - name: restartapache
+        become: yes
+        command: "sudo systemctl restart kubelet" 
+      - name: restartapache
+        become: yes
+        command: "kubeadm token create --print-join-command > /join.sh" 
+      - name: restartapache
+        become: yes
+        command: "sudo apt-get install -y avahi-daemon libnss-mdns" 
+      - name: restartapache
+        become: yes
+        command: "echo Master node setup Complete#############################################"      
+      - name: Copy file to S3 bucket
+        s3: aws_access_key=AKIA5KGUZ3D6UVLXW64B aws_secret_key=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 bucket=epam-assignment-bucket object=/join.sh src=/join.sh mode=put
