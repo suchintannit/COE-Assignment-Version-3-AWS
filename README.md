@@ -24,15 +24,115 @@ Activity - 5 Days
 
 ### 1. Architecture
 
-The project has a terraform file called create-infra.tf that will create 3 nodes in the AWS. Once the nodes are created the provisioner module of the terraform file  a Kubernetes 1.15.0 cluster with 3 nodes which contains the components below:
+The project has a terraform file called create-infra.tf that will create 3 nodes in the AWS. Once the nodes are created the provisioner module of the terraform provisions 2 bash scripts in each node. The table below summarizes this architecture. The terffaorm script would not run this scripts. 
+| IP           | Hostname | Componets                                | Scripts|
+| ------------ | -------- | ---------------------------------------- |---------|
+| 10.0.0.10 | master    | kube-apiserver, kube-controller-manager, kube-scheduler, etcd, kubelet, docker, flannel, dashboard | common.sh master.sh|
+| 10.0.0.11 | node01    | kubelet, docker, flannel, todo-myapp          |common.sh master.sh|
+| 10.0.0.12 | node02    | kubelet, docker, flannel, mysql-container               |common.sh master.sh|
 
-| IP           | Hostname | Componets                                |
-| ------------ | -------- | ---------------------------------------- |
-| 10.0.0.10 | master    | kube-apiserver, kube-controller-manager, kube-scheduler, etcd, kubelet, docker, flannel, dashboard |
-| 10.0.0.11 | node01    | kubelet, docker, flannel, todo-myapp          |
-| 10.0.0.12 | node02    | kubelet, docker, flannel, mysql-container               |
+The tools are integrated in the following way:
 
-The default setting will create the private network from 10.0.0.10 to 10.0.0.12 for nodes, and it will use the host's DHCP for the public IP.The kubernetes service's VIP range is `10.13.0.0/16`. The container network range is `10.13.0.0/16` owned by flannel with `host-gw` backend. `kube-proxy` will run as `ipvs` mode. The project intitializes a control plane at the 'master' node and also installs the 'kubernetes-dashboard. The dashboard is available at:
+		 ______________________________________________________________________________________
+		'											'
+		'	 common.sh	''''''''''''\   kubeadm,kubectl,dashboard,REST			'
+		' /----> master.sh --->	'   Master  / <<------------<------------- 			'
+		'/			''''''''''''				'			'
+		'								'			'
+		'								'			'
+		'								'
+		'	common.sh	''''''''''''\				'			'
+Terraform------>	node.sh	 ---->	   Node01---->-> Docker Container <-<---- ' <----<----kubernetes'
+		'	 			    /	  (To-do APP)		'		        '
+	        '\			''''''''''''				'			'					
+		' \								'
+		' \								'
+		'  \	   common.sh	''''''''''''				'			'
+		'   \----->node.sh --->	'   Node02--->-> Docker Conatiner  <-<----'			'
+		'			''''''''''''	    (MySQL)					'
+	 	'											'
+		'______________________________________________________________________________________	'
+		
+	 
+
+Once the resources are made ssh into the master node and execute the following:
+		
+		$sudo chmod +x master.sh
+		$sudo chmod +x common.sh
+		$sudo sh common.sh
+		$sudo sh master.sh
+		
+On successful execution of the above commands the master node will print the kubeadm join command for its workers.
+		
+Do the same on each worker node the resources are made ssh into the master node and execute the following:
+		
+		$sudo chmod +x worker.sh
+		$sudo chmod +x common.sh
+		$sudo sh common.sh
+		$sudo sh worker.sh
+Once the above commands execute successfully, now paste the kubeadm join command from the master node. This worker should now join the master. Restart kubelet in worker.
+
+At this step we have a working cluster using kubeadm with deployed ec2 instances. Now we are ready to deploy pods into the created nodes.
+
+### Deploy pods into nodes
+In order to deply pods to the worker nodes, the worker nodes must be labelled. The labelling of worker nodes allows us to deploy pods in them. To get the current status of the labels run the following command:
+
+		kubectl get nodes --show-labels
+
+Assign labels to worker1 and worker2 with labels disktype=worker1-ssd and disktype=worker2-ssd by executing the following commands:
+
+		kubectl label nodes worker1 name: worker1
+		kubectl label nodes worker1 name: worker2
+
+**Step 4:** create the YML files for the getting-started-app and the mysql-app
+
+		apiVersion: v1
+		kind: Pod
+		metadata:
+  			name: to-do-app
+  			labels:
+    		env: test
+		spec:
+  			containers:
+  				- name: to-do-app
+    			 image: 896325/suchintan-getting-started
+    			 imagePullPolicy: IfNotPresent
+  			nodeSelector:
+    			name: worker1
+
+save this file as getting-started.yml. Note that the nodeselector property allows us to select the worker 1 to deploy the pods.
+
+		apiVersion: v1
+		kind: Pod
+		metadata:
+  			name: mysql-pod
+  			labels:
+    		context: assignment-k8s-lab
+		spec:
+  			containers:
+    			- name: mysql
+      		 	image: mysql:latest
+      			env:
+        			- name: "MYSQL_USER"
+          		  	value: "mysql"
+        			- name: "MYSQL_PASSWORD"
+          	  	  	value: "mysql"
+        			- name: "MYSQL_DATABASE"
+         	  	  	value: "sample"
+        			- name: "MYSQL_ROOT_PASSWORD"
+          	  	  	value: "supersecret"
+      			ports:
+        			- containerPort: 3306
+			nodeSelector:
+    			name: worker2
+save this file as mysql.yml. Note that the nodeselector property allows us to select the worker 1 to deploy the pods.
+ 
+**Step 5:** Once the pods are deployed check their status using
+
+			Deploy the pods 
+			kubectl 
+			kubectl get pods -o wide
+			kubectl get all -o wide
 
 
 ### 2. Terraform
@@ -60,27 +160,7 @@ This command invokes the vagrantfile in the project.  Of the 3 nodes, one is the
 Once the master is created the vagrant file uses the "common.sh" and "master.sh" to provision it as a kubernetes _Master_. Also, when the worker nodes are created the vagrant file provisions them as _Workers_ using the "common.sh" and the "node.sh" scripts.
 
 ### 3. How the Tools (Terraform, Script and Ubuntu) Automation Works?
-	 	 ______________________________________________________________________________________
-		'											'
-		'	 common.sh	''''''''''''\   kubeadm,kubectl,dashboard,REST			'
-		' /----> master.sh --->	'   Master  / <<------------<------------- 			'
-		'/			''''''''''''				'			'
-		'								'			'
-		'								'			'
-		'								'
-		'	common.sh	''''''''''''\				'			'
-Terraform-'----->	node.sh	 ---->	   Node01---->-> Docker Container <-<---- ' <----<----kubernetes'
-		'	 			    /	  (To-do APP)		'		        '
-	        '\			''''''''''''				'			'					
-		' \								'
-		' \								'
-		'  \	   common.sh	''''''''''''				'			'
-		'   \----->node.sh --->	'   Node02--->-> Docker Conatiner  <-<----'			'
-		'			''''''''''''	    (MySQL)					'
-	 	'											'
-		'______________________________________________________________________________________	'
-		
-	 
+	 	
 	 
 ### 5. Troubleshoot Execution.
 Do a vagrant up the first time you execute. Let the process complete in one go. If it gets stuck then close the VMs from virtualbox and then do the follwoing options from the root folder.
@@ -200,64 +280,6 @@ A K8S cluster is created on a vagrant environment with 1 master node and 2 worke
 
 **Step 2:** Assign Labels to the worker nodes.
 
-In order to deply pods to the worker nodes, the worker nodes must be labelled. The labelling of worker nodes allows us to deploy pods in them. To get the current status of the labels run the following command:
-
-		kubectl get nodes --show-labels
-
-Assign labels to worker1 and worker2 with labels disktype=worker1-ssd and disktype=worker2-ssd by executing the following commands:
-
-		kubectl label nodes worker1 name: worker1
-		kubectl label nodes worker1 name: worker2
-
-**Step 4:** create the YML files for the getting-started-app and the mysql-app
-
-		apiVersion: v1
-		kind: Pod
-		metadata:
-  			name: to-do-app
-  			labels:
-    		env: test
-		spec:
-  			containers:
-  				- name: to-do-app
-    			 image: 896325/suchintan-getting-started
-    			 imagePullPolicy: IfNotPresent
-  			nodeSelector:
-    			name: worker1
-
-save this file as getting-started.yml. Note that the nodeselector property allows us to select the worker 1 to deploy the pods.
-
-		apiVersion: v1
-		kind: Pod
-		metadata:
-  			name: mysql-pod
-  			labels:
-    		context: assignment-k8s-lab
-		spec:
-  			containers:
-    			- name: mysql
-      		 	image: mysql:latest
-      			env:
-        			- name: "MYSQL_USER"
-          		  	value: "mysql"
-        			- name: "MYSQL_PASSWORD"
-          	  	  	value: "mysql"
-        			- name: "MYSQL_DATABASE"
-         	  	  	value: "sample"
-        			- name: "MYSQL_ROOT_PASSWORD"
-          	  	  	value: "supersecret"
-      			ports:
-        			- containerPort: 3306
-			nodeSelector:
-    			name: worker2
-save this file as mysql.yml. Note that the nodeselector property allows us to select the worker 1 to deploy the pods.
- 
-**Step 5:** Once the pods are deployed check their status using
-
-			Deploy the pods 
-			kubectl 
-			kubectl get pods -o wide
-			kubectl get all -o wide
 
 **Step 6:** From the above commands find the external ip of the pods. 
 
