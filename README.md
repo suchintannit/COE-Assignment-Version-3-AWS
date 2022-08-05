@@ -24,6 +24,30 @@ Activity - 5 Days
 
 ### 1. Architecture
 
+The tools are integrated in the following way:
+
+			 ______________________________________________________________________________________
+			'											'
+			'	 common.sh	''''''''''''\   kubeadm,kubectl,dashboard,REST			'
+			' /----> master.sh --->	'   Master  / <<------------<------------- 			'
+			'/			''''''''''''				'			'
+			'								'			'
+			'								'			'
+			'								'
+			'	common.sh	''''''''''''\				'			'
+	Terraform------>	node.sh	 ---->	   Node01---->-> Docker Container <-<---- ' <----<----kubernetes'
+			'	 			    /	  (To-do APP)		'		        '
+	        	'\			''''''''''''				'			'					
+			' \								'
+			' \								'
+			'  \	   common.sh	''''''''''''				'			'
+			'   \----->node.sh --->	'   Node02--->-> Docker Conatiner  <-<----'			'
+			'			''''''''''''	    (MySQL)					'
+	 		'											'
+			'______________________________________________________________________________________	'
+		
+### 2.Execution Steps
+
 The project has a terraform file called create-infra.tf that will create 3 nodes in the AWS. Once the nodes are created the provisioner module of the terraform provisions 2 bash scripts in each node. The table below summarizes this architecture. The terffaorm script would not run this scripts. 
 | IP           | Hostname | Componets                                | Scripts|
 | ------------ | -------- | ---------------------------------------- |---------|
@@ -31,29 +55,11 @@ The project has a terraform file called create-infra.tf that will create 3 nodes
 | 10.0.0.11 | node01    | kubelet, docker, flannel, todo-myapp          |common.sh master.sh|
 | 10.0.0.12 | node02    | kubelet, docker, flannel, mysql-container               |common.sh master.sh|
 
-The tools are integrated in the following way:
-
-		 ______________________________________________________________________________________
-		'											'
-		'	 common.sh	''''''''''''\   kubeadm,kubectl,dashboard,REST			'
-		' /----> master.sh --->	'   Master  / <<------------<------------- 			'
-		'/			''''''''''''				'			'
-		'								'			'
-		'								'			'
-		'								'
-		'	common.sh	''''''''''''\				'			'
-Terraform------>	node.sh	 ---->	   Node01---->-> Docker Container <-<---- ' <----<----kubernetes'
-		'	 			    /	  (To-do APP)		'		        '
-	        '\			''''''''''''				'			'					
-		' \								'
-		' \								'
-		'  \	   common.sh	''''''''''''				'			'
-		'   \----->node.sh --->	'   Node02--->-> Docker Conatiner  <-<----'			'
-		'			''''''''''''	    (MySQL)					'
-	 	'											'
-		'______________________________________________________________________________________	'
+Execute the first step of the project by running the follwoing the root folder of the project:
 		
-	 
+		PS>terraform init
+		PS>terraform plan
+		PS>terraform apply
 
 Once the resources are made ssh into the master node and execute the following:
 		
@@ -134,35 +140,25 @@ save this file as mysql.yml. Note that the nodeselector property allows us to se
 			kubectl get pods -o wide
 			kubectl get all -o wide
 
+### About the DEvOps Tools Used:
 
-### 2. Terraform
 
-**Vagrant** is a command line tool used to automate the formation of virtual machines (VMs). It is a good option to use vagrant to automate the creation of VMs on which our master and workers will run. For this example, the vagrantfile create 3 ubuntu 'nodes' running the vagrant box ubuntu. 
-
-To execute this whole project just execute the following in the root folder in Powershell as the administrator. Please ADD A BLANK Folder named 'shared' in the root folder.
+### Terraform
 
 		PS>terraform init
 		PS>terraform plan
 		PS>terraform apply
 
-This command invokes the vagrantfile in the project.  Of the 3 nodes, one is the master and will run the kubernetes controller and dashboard. The master node is responsible to run the control plane. The control plane listens to REST API request. The worker nodes01 executes a python to-do docker container while the node02 stores its persitant database through a mysql container. This project demonstrates how a multi container app can be managed by a cluster. The vagrant file contains 3 basic variables
-### 3. Ansible
+This command invokes the terraform in the project.  Of the 3 nodes, one is the master and will run the kubernetes controller and dashboard. The master node is responsible to run the control plane. The control plane listens to REST API request. The worker nodes01 executes a python to-do docker container while the node02 stores its persitant database through a mysql container. This project demonstrates how a multi container app can be managed by a cluster.
 
-### 4. Kubernetes**: Kubernetes is a portable, extensible, open source platform for managing containerized workloads and services, that facilitates both declarative configuration and automation. It has a large, rapidly growing ecosystem. Kubernetes services, support, and tools are widely available. Nodes (like VMs) and inside these nodes Pods (like Containers) are executed. Kubernetes works on a master-slave architecture where there is atleast one master and multiple workers.
+### Ansible
 
-### 5. Docker containers enable application developers to package software for delivery to testing, and then to the operations team for production deployment. The operations team then has the challenge of running Docker container applications at scale in production. Kubernetes is a tool to run and manage a group of Docker containers. While Docker focuses on application development and packaging, Kubernetes ensures those applications can run at scale.
-**NUM_WORKER_NODES=1** - Defines the number of worker nodes.
+### Kubernetes: Kubernetes is a portable, extensible, open source platform for managing containerized workloads and services, that facilitates both declarative configuration and automation. It has a large, rapidly growing ecosystem. Kubernetes services, support, and tools are widely available. Nodes (like VMs) and inside these nodes Pods (like Containers) are executed. Kubernetes works on a master-slave architecture where there is atleast one master and multiple workers.
 
-**IP_NW="10.0.0."** - Defines the IP range in which nodes will be created.
-
-**IP_START=10** - The last octate of MASTER IP address.
-
-Once the master is created the vagrant file uses the "common.sh" and "master.sh" to provision it as a kubernetes _Master_. Also, when the worker nodes are created the vagrant file provisions them as _Workers_ using the "common.sh" and the "node.sh" scripts.
-
-### 3. How the Tools (Terraform, Script and Ubuntu) Automation Works?
+### Docker containers enable application developers to package software for delivery to testing, and then to the operations team for production deployment. The operations team then has the challenge of running Docker container applications at scale in production. Kubernetes is a tool to run and manage a group of Docker containers. While Docker focuses on application development and packaging, Kubernetes ensures those applications can run at scale.
 	 	
 	 
-### 5. Troubleshoot Execution.
+### 4. Troubleshoot Execution.
 Do a vagrant up the first time you execute. Let the process complete in one go. If it gets stuck then close the VMs from virtualbox and then do the follwoing options from the root folder.
 
 	PS>terraform destroy
@@ -180,114 +176,61 @@ Bash is a Unix command line interface for interacting with the operating system,
 Bash scripting is a crucial tool for system administrators and developers. Scripting helps automate repetitive tasks and interact with the OS through custom instruction combinations. The skill is simple to learn and requires only basic terminal commands to get started.
 
 You will often encounter shell scripts starting with #! /bin/bash, #! is called a shebang or hashbang. shebang plays an important role in shell scripting, especially when dealing with different types of shells.
-### 7. Explanation of Output During the Execution of "common.sh" file.
-	PS>"Installing Docker"
+		
+		This is common tools script that installs docker and kubernetes on each node of the cluster and makes sure that they are ready to be added 		   to the cluster
 
-	Until this step in the common.sh we try to download all images required for the kudeadm configuration. This step without errors signifies that we are now ready to deploy our control plane. Adding Kubernetes Repository. Adding Firewall Rules. Deactivatind 	Firewall. Disabling SWAP
-
-	PS>"Adding Kubernetes Repository"
-
-	Now, run the apt-add-repository command to add the Kubernetes package repository in Ubuntu. You must perform the following steps:
+  	echo "Starting the Common Tools#############################################\n"
+  	sudo apt-get update -y
+  	echo "Installing Docker#####################################################\n"
+  	sudo apt-get install -y docker.io
+  	echo "Adding the Kubernetes Repo#############################################\n"
+  	curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+  	sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+  	sudo apt-get update -y
+  	echo "Installing Kubernetes Tools#############################################\n"
+  	sudo apt-get install -y kubelet kubeadm kubectl  
+  	sudo apt-mark hold kubeadm kubelet kubectl
+  	echo "Testing install of Kubernetes############################################\n"
+  	kubeadm version
+  	echo "Install dependent Tools#############################################\n"
+  	sudo apt-get install -y ebtables ethtool
+  	echo "bridged traffic to iptables is enabled for kube-router.\n"
+  	echo "Disable Swap###############################################"
+  	# disable swap
+  	sudo swapoff -a
+  	sudo sed -i '/swap/d' /etc/fstab
+  	echo "Swap Disabled##############################################"
 	
-		printf "##### Adding Kubernetes Repository #####\n"
-		sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-		echo 'deb http://apt.kubernetes.io/ kubernetes-xenial main' | sudo tee /etc/apt/sources.list.d/kubernetes.list
-
-
-	PS>"Adding Firewall Rules"
-
-
-
-	PS>"Deactivatind Firewall"
-
-
-
-	PS>"Disabling SWAP".
-
- 
-
-### 8. Explanation of Output During the Execution of "master.sh" file.
-
-
-	PS>"Preflight Check Passed: Downloaded All Required Images".
-
-	Until this step in the master.sh we try to download all images required for the kudeadm configuration. This step without errors signifies that we are now ready to deploy our control plane.
-
-	PS>"K8s Control Plane Successful".
-
-	After this output you can be certain that the init command has been executed and the control plane is now running at 10.0.0.10 and the api-server is listening to that address.
-
-	PS>"Admin Conf Directory Made. ENV variable exported".
-
-	The admin configuration directory is made through the following commands which have to be executed 
-
-	*as root:
-
-		$ export KUBECONFIG=/etc/kubernetes/admin.conf
+	echo "Starting the Kubernetes Cluster on Master Node############################################\n"
+  
+  	# Start cluster
+  	sudo kubeadm init --apiserver-advertise-address=${hostname -I} --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=all
+  	echo "Change the owner of config file#############################################\n"
+  	# Configure kubectl
+  	mkdir -p $HOME/.kube
+  	sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  	sudo chown $(id -u):$(id -g) $HOME/.kube/config
+  	# Fix kubelet IP
+  	echo "Fixing Kubelet IP#############################################\n"
+  	echo 'Environment="KUBELET_EXTRA_ARGS=--node-ip=10.0.0.10"' | sudo tee -a /etc/systemd/system/kubelet.service.d/10-kubeadm.conf  
+  	# Configure flannel
+  	echo "Install the flannel network fabric#############################################\n"
+  	curl -o kube-flannel.yml https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+  	sed -i.bak 's|"/opt/bin/flanneld",|"/opt/bin/flanneld", "--iface=enp0s8",|' kube-flannel.yml
+  	kubectl create -f kube-flannel.yml
+  	echo "Relaoding the system#############################################\n"
+  	sudo systemctl daemon-reload
+  	sudo systemctl restart kubelet
+  	echo "Save join token to join.sh file#############################################\n"
+  	kubeadm token create --print-join-command > /vagrant/join.sh
+  	chmod +x /vagrant/join.sh
+  	echo "Install Multicast Tools#############################################\n"
+  	sudo apt-get install -y avahi-daemon libnss-mdns
+  	echo "Master node setup Complete#############################################\n"
 	
-	*or as others:
+Finally the worker.sh file runs in the worker and is responsible to join the worker.
 
-		$ mkdir -p "$HOME"/.kube
-  		$ cp -i /etc/kubernetes/admin.conf "$HOME"/.kube/config
- 		$ chown "$(id -u)":"$(id -g)" "$HOME"/.kube/config
+	echo Restart kubelet and containerd
+	sudo systemctl restart kubelet
+	sudo systemctl restart containerd
 	
-	PS>"Network Appplied".
-
-	Flannel in Kubernetes is a virtual layer that is used with containers, it is designed basically for containers only. The above output shows that a network for pods has been created.
-
-	PS>"Join Sh Created".
-
-	Until this step in the master.sh we try to download all images required for the kudeadm configuration. This step without errors signifies that we are noe 		readyt to deploy our control plane.
-
-	PS>"Install Calico Network Plugin".
-
-	After this output you can be certain that the init command has been executed and the control plane is now running at 10.0.0.10 and the api-server is listening 		to that address.
-
-	PS>
-
-### 9. Explanation of the node.sh file.
-
-This script is meant to make the _workers_ join the working _master_. The 'master.sh' script while deploying the master will create the print-join command that can be used to make the workers join a cluster. node.sh automates by executing this script.
-### 10. FAQs.
-Error FAQs:
-
-	Error: Long wait during execution of certain commands. {processing triggers for man-db, generating initramfs, get package #118}. 
-	Solution: All these are normal. Make sure you have a good internet connection and stay online.
-	Error: System not running as sudo.
-	Solution: Make sure vagrant and virtualbox are not blocked on your host system and have sufficient privilleges.
-	Error: Unspecified filesystem vboxfs.
-	Solution: Try to change the version of ubuntu in main vagrantfile.
-	
-Question: What is SWAP space and why it must be disabled in kubernetes master and worker nodes?
-
-Answer: **Swap space** is a space on a hard disk that is a substitute for physical memory. It is used as virtual memory which contains process memory images. Whenever our computer runs short of physical memory it uses its virtual memory and stores information in memory on disk. Swap space helps the computer’s operating system in pretending that it has more RAM than it actually has. It is also called a swap file. To summarize, the lack of swap support lies in the fact that swap usage is not even expected in Kubernetes and there are enormous work to be done before swap can be used in product scenarios. IMHO, these work are no just about Kubernets itself but also enven more about Linux kernel. It might be problem for the Kubernetes community to find a strong motivation to tackle this issue considering the huge amount of efforts ahead.
-
-Question: Why the **Master-Slave** Architecture and how it helps in production?
-
-Answer: The master node in a Kubernetes architecture is used to manage the states of a cluster. It is actually an entry point for all types of administrative tasks. In the Kubernetes cluster, more than one master node is present for checking the fault tolerance.
-
-
-
-
-### How the Project Executes ?
-
-**Step 1:** Automated Creation of a local K8s cluster.
-
-A K8S cluster is created on a vagrant environment with 1 master node and 2 worker nodes. The master node is responsible to create a control plane to which the workers can join. The script automatically starts the control plane in the master node and also makes the worker nodes join it. Once the worker nodes have joined. the cluster can be verified on the master node by running:
-
-		kubectl get nodes -o wide
-		kubectl get all -o wide
-
-**Step 2:** Assign Labels to the worker nodes.
-
-
-**Step 6:** From the above commands find the external ip of the pods. 
-
-			vagrant ssh worker1
-			
-ssh into the worker node using. As the mworkers donot run kube-proxy we cannot see output from master node. Curl to this ip to verify if the the pods are running the required containers or not.
-
-
-			curl http://<IP from above> 
-
-NOTE:- The same project should also be executed through jenkins as a CI/CD project and the screenshots are present in the folder 'screenshots' in the root of the project. hint is to install the jenkins plugin for vagrant and then do a vagrant up inside jenkins.
