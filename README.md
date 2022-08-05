@@ -52,8 +52,8 @@ The project has a terraform file called create-infra.tf that will create 3 nodes
 | IP           | Hostname | Componets                                | Scripts|
 | ------------ | -------- | ---------------------------------------- |---------|
 | 10.0.0.10 | master    | kube-apiserver, kube-controller-manager, kube-scheduler, etcd, kubelet, docker, flannel, dashboard | common.sh master.sh|
-| 10.0.0.11 | node01    | kubelet, docker, flannel, todo-myapp          |common.sh master.sh|
-| 10.0.0.12 | node02    | kubelet, docker, flannel, mysql-container               |common.sh master.sh|
+| 10.0.0.11 | worker1    | kubelet, docker, flannel, todo-myapp          |common.sh master.sh|
+| 10.0.0.12 | worker2    | kubelet, docker, flannel, mysql-container               |common.sh master.sh|
 
 Execute the first step of the project by running the follwoing the root folder of the project:
 		
@@ -164,7 +164,7 @@ containers enable application developers to package software for delivery to tes
 	 	
 	 
 ### 4. Troubleshoot Execution.
-Do a vagrant up the first time you execute. Let the process complete in one go. If it gets stuck then close the VMs from virtualbox and then do the follwoing options from the root folder.
+Do a terraform apply the first time you execute. Let the process complete in one go. If it gets stuck then close the VMs from virtualbox and then do the follwoing options from the root folder.
 
 	PS>terraform destroy
 
@@ -229,8 +229,8 @@ This is the 'master.sh' script that creates a control plane on the master node.
   	sudo systemctl daemon-reload
   	sudo systemctl restart kubelet
   	echo "Save join token to join.sh file#############################################\n"
-  	kubeadm token create --print-join-command > /vagrant/join.sh
-  	chmod +x /vagrant/join.sh
+  	kubeadm token create --print-join-command > /ubuntu/join.sh
+  	chmod +x /ubuntu/join.sh
   	echo "Install Multicast Tools#############################################\n"
   	sudo apt-get install -y avahi-daemon libnss-mdns
   	echo "Master node setup Complete#############################################\n"
