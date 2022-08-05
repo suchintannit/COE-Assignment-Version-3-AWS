@@ -158,10 +158,19 @@ This command invokes the terraform in the project.  Of the 3 nodes, one is the m
 
 ### Ansible:
 
+Ansible is a automated resource creator and provisioner. In this project we also provide the asnsible code for common.sh, master.sh and worker.sh. But note that those codes are incomplete. For the time being the project does automated resource provisioning using bash scripts. Also note the fact that ansible is not required on the guest machine or resources it is only required in the host machine, Since this is a windows machine ansible is not possible (will try in linux and update working codes).
+
 
 ### Kubernetes: 
 
-Kubernetes is a portable, extensible, open source platform for managing containerized workloads and services, that facilitates both declarative configuration and automation. It has a large, rapidly growing ecosystem. Kubernetes services, support, and tools are widely available. Nodes (like VMs) and inside these nodes Pods (like Containers) are executed. Kubernetes works on a master-slave architecture where there is atleast one master and multiple workers.
+Kubernetes is a portable, extensible, open source platform for managing containerized workloads and services, that facilitates both declarative configuration and automation. It has a large, rapidly growing ecosystem. Kubernetes services, support, and tools are widely available. Nodes (like VMs) and inside these nodes Pods (like Containers) are executed. Kubernetes works on a master-slave architecture where there is atleast one master and multiple workers. Kubernetes for ubuntu comes in differenet flavours:
+
+		1. Kbeadm suite - by google
+		
+		2. Microk8S by cannonical
+		
+		3. Kubernetes Charm by Canonical
+
 
 ### Docker 
 
