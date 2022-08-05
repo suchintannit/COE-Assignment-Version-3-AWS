@@ -1,5 +1,6 @@
 
-## Single Vagrant File Creation of 3-node Ubuntu Cluster in any Host OS
+## Creation of a AWS cluster on AWS using Terraform-Ansible-Scripts-Kubernetes-Jenkins-Git
+
 #### Dr. Suchintan Mishra [suchintan_mishra@epam.com]
 
 #### Problem Statement:
@@ -20,8 +21,6 @@ Activity - 5 Days
 	5. Building CI/CD pipeline to deploy new version of Application (Jenkins)	
 	
 	6. Bulding Monitoring for application	
-
-This Project contains a vagrant file which when run on any OS will create a 3-node cluster with 1 master node and 2 worker nodes.
 
 #### Architecture of Solution
 The project will create a Kubernetes 1.15.0 cluster with 3 nodes which contains the components below:
@@ -53,18 +52,43 @@ The project will create a Kubernetes 1.15.0 cluster with 3 nodes which contains 
 	 	'											'
 		'______________________________________________________________________________________	'
 		
-#### How the Solution is made using Vagrant and Scripts?
+#### Automated Stages in DevOps Development
 
-     The solution is composed of vagrant and scripts. vagrant creates a working cluster with justa  single command once the cluster is created now scripts install docker and kubernetes into them. Once docker and kubernetes are installed then scripts automatically create a master plane and make the wokers join the master. Once the cluster is created manual steps to deploy nodes have to be followed (which is given in detail below). Finally with curl we can verify if the to-do docker app is working on a pod or not (which is also described below)
+     1. Automated Creation of Infrastructure
+     
+     In this project we create the AWS infrstructure using the infra.tf file. The screenshots of this phase are included in the email
+     
+     2. Automated Resource Configuration
+     
+     The resource configuration can be done using ansible and/or scripts. The project includes 3 scripts - common.sh, master.sh, worker.sh
+     
+     3. Automated Cluster and Auto-scaling
+     
+     The project uses Kubeadm for cluster creation and auto-scaling. 
+     
+     4. Automated Application Code Manangement-Github
+     
+     Git is used for Application Code Manangement
+     
+     5. Automated CI/CD
+     
+     Jenkins has been used to check the CI/CD project
+     
+     6. Automated Monitoring.
+     
+     Cloudwatch has been used to watch the cluster and its status.
 #### How to execute the project?
 
 The project can be executed by just using a single command. Download the project folder and then inside the folder use Powershell to run the follwoing command
 
-    PS>vagrant up
+    PS>terraform init
+    PS>terraform plan
+    PS>terraform apply
+    
     
 The resources and the cluster created can be destroyed by executing the following command in the root folder of the project.
 
-    PS>vagrant destroy -f
+    PS>terraform destroy
     
  
 ### 5. Troubleshoot Execution.
