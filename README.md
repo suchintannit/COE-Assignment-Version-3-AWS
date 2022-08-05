@@ -17,26 +17,35 @@ Activity - 5 Days
 This Project contains a vagrant file which when run on any OS will create a 3-node cluster with 1 master node and 2 worker nodes.
 
 #### Architecture of Solution
- 	   ______________________________________________________________________________________
-	'											                                               '
-	'	 $common.sh	        ''''''''''''\   kubeadm,kubectl,dashboard,REST	                   '
-	' /----> master.sh --->	'   Master  / <<------------<------------- 			               '
-	'/			            ''''''''''''				            '           			   '
-	'								                                '			               '
-	'								                                '			               '
-	'								                                '                          '
-	'	$common.sh	        ''''''''''''\			                '			
-Vagrant------>	node.sh---->    Node01---->-> Docker Container <-<----  <----<----kubernetes'
-	'	 			                    /	  (To-do APP)	        '		                   '
-    '\		   	            ''''''''''''				            '			 			   '		
-	' \								                                '                          '
-	' \								                                '                          '
-	'  \	   $common.sh	   ''''''''''''				            '			               '
-	'   \----->node.sh --->	    Node02--->-> Docker Conatiner  <-<---			               '
-	'			               ''''''''''''	    (MySQL)					                                   
- 	'											                                               '
-	' _________________________________________________________________________________________'
+The project will create a Kubernetes 1.15.0 cluster with 3 nodes which contains the components below:
 
+| IP           | Hostname | Componets                                |
+| ------------ | -------- | ---------------------------------------- |
+| 10.0.0.10 | master    | kube-apiserver, kube-controller-manager, kube-scheduler, etcd, kubelet, docker, flannel, dashboard |
+| 10.0.0.11 | node01    | kubelet, docker, flannel, todo-myapp          |
+| 10.0.0.12 | node02    | kubelet, docker, flannel, mysql-container               |
+
+
+		 ______________________________________________________________________________________
+		'											'
+		'	 common.sh	''''''''''''\   kubeadm,kubectl,dashboard,REST			'
+		' /----> master.sh --->	'   Master  / <<------------<------------- 			'
+		'/			''''''''''''				'			'
+		'								'			'
+		'								'			'
+		'								'
+		'	common.sh	''''''''''''\				'			'
+	Vagrant-'----->	node.sh	 ---->	   Node01---->-> Docker Container <-<---- ' <----<----kubernetes'
+		'	 			    /	  (To-do APP)		'		        '
+	        '\			''''''''''''				'			'					
+		' \								'
+		' \								'
+		'  \	   common.sh	''''''''''''				'			'
+		'   \----->node.sh --->	'   Node02--->-> Docker Conatiner  <-<----'			'
+		'			''''''''''''	    (MySQL)					'
+	 	'											'
+		'______________________________________________________________________________________	'
+		
 #### How the Solution is made using Vagrant and Scripts?
 
      The solution is composed of vagrant and scripts. vagrant creates a working cluster with justa  single command once the cluster is created now scripts install docker and kubernetes into them. Once docker and kubernetes are installed then scripts automatically create a master plane and make the wokers join the master. Once the cluster is created manual steps to deploy nodes have to be followed (which is given in detail below). Finally with curl we can verify if the to-do docker app is working on a pod or not (which is also described below)
