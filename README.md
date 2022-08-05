@@ -257,7 +257,7 @@ Using this project a basic understanding of the devops tools and their usage can
 	| ------------- | --------------------      | -------------------------        |----------   |
 	| Vagrant       | Resource Creation         | Terraform, AWS CLOUD Formation   |             |
 	| Terraform     | Resource Creation         | Vagrant, AWS CLOUD FOrmation     |             |
-	|Ansible        | Application deployment    | CHEF, Puppet                     |             |     
-	|Docker         | Application deployment    |                                  |             |             
-	|Kubernetes     | Resource Monitoring       | Kubernetes Charm, AWS EKS        |             |
+	| Ansible       | Application deployment    | CHEF, Puppet                     |             |     
+	| Docker        | Application deployment    |                                  |             |             
+	| Kubernetes    | Resource Monitoring       | Kubernetes Charm, AWS EKS        |             |
 
