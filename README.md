@@ -7,11 +7,17 @@ Project/Assignment - 5 Days
 		
 DevOps Project/Assignment	Topics with Hands-on Lab	
 Activity - 5 Days	
-    1. Three Tier web application using docker and Kubernetes 	
+----------------------------------------------------------
+    	1. Three Tier web application using docker and Kubernetes 
+	
 	2. Infrastructure as Code Using Terraform (Modules)	
+	
 	3. Configuration Management using Ansible (Roles)	
-	4. Application code management using Git	
+	
+	4. Application code management using Git
+	
 	5. Building CI/CD pipeline to deploy new version of Application (Jenkins)	
+	
 	6. Bulding Monitoring for application	
 
 This Project contains a vagrant file which when run on any OS will create a 3-node cluster with 1 master node and 2 worker nodes.
