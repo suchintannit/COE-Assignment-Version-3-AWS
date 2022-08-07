@@ -4,7 +4,7 @@
   echo "output file cleared############################"
   echo "Starting the Kubernetes Cluster on Master Node############################################\n"
   # Start cluster
-  sudo kubeadm init --apiserver-advertise-address=${hostname -I} --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=all
+  sudo kubeadm init --apiserver-advertise-address=$(hostname -i) --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors=all
   echo "Change the owner of config file#############################################\n"
   # Configure kubectl
   mkdir -p $HOME/.kube
@@ -24,8 +24,8 @@
   sudo systemctl daemon-reload
   sudo systemctl restart kubelet
   echo "Save join token to join.sh file#############################################\n"
-  kubeadm token create --print-join-command > /vagrant/join.sh
-  chmod +x /vagrant/join.sh
+  kubeadm token create --print-join-command > /home/ubuntu/join.sh
+  chmod +x /home/ubuntu/join.sh
   echo "Install Multicast Tools#############################################\n"
   sudo apt-get install -y avahi-daemon libnss-mdns
   echo "Master node setup Complete#############################################\n"
