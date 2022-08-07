@@ -1,4 +1,5 @@
 pipeline {
+    agent any
   parameters {
     password (name: 'AKIA5KGUZ3D64VCVZESQ')
     password (name: 'mJy/aQ07jVV4ypxS7QiBzW61iyFjXwOhUlLRPQlg')
@@ -6,35 +7,24 @@ pipeline {
   environment {
     TF_WORKSPACE = 'dev' //Sets the Terraform Workspace
     TF_IN_AUTOMATION = 'true'
-    AWS_ACCESS_KEY_ID = "${params.AWS_ACCESS_KEY_ID}"
-    AWS_SECRET_ACCESS_KEY = "${params.AWS_SECRET_ACCESS_KEY}"
+    AWS_ACCESS_KEY_ID = "your-aws-access-id"
+    AWS_SECRET_ACCESS_KEY = "your-aws-access-key"
   }
-  stages {
-    stage('Terraform Init') {
+stages {
+    stage('Terraform init') {
       steps {
-        sh "${env.TERRAFORM_HOME}/terraform init -input=false"
+        sh "cd /Users/suchintanmishra/Desktop/COE-Assignment-Version-3-AWS && terraform init -input=false"
       }
     }
-    stage('Terraform Plan') {
+    stage('Terraform plan') {
       steps {
-        sh "${env.TERRAFORM_HOME}/terraform plan -out=tfplan -input=false -var-file='dev.tfvars'"
+        sh "cd /Users/suchintanmishra/Desktop/COE-Assignment-Version-3-AWS && terraform plan -out=tfplan -input=false "
       }
     }
-    stage('Terraform Apply') {
+    stage('Terraform apply') {
       steps {
-        input 'Apply Plan'
-        sh "${env.TERRAFORM_HOME}/terraform apply -input=false tfplan"
+        sh "cd /Users/suchintanmishra/Desktop/COE-Assignment-Version-3-AWS && terraform apply -input=false tfplan"
       }
     }
-    stage('AWSpec Tests') {
-      steps {
-          sh '''#!/bin/bash -l
-bundle install --path ~/.gem
-bundle exec rake spec || true
-'''
-
-        junit(allowEmptyResults: true, testResults: '**/testResults/*.xml')
-      }
-    }
-  }
+}
 }
