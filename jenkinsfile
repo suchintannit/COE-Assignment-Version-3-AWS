@@ -1,8 +1,8 @@
 pipeline {
     agent any
   parameters {
-    password (name: 'AKIA5KGUZ3D64VCVZESQ')
-    password (name: 'mJy/aQ07jVV4ypxS7QiBzW61iyFjXwOhUlLRPQlg')
+    password (name: 'your-aws-access-id')
+    password (name: 'your-aws-access-key')
   }
   environment {
     TF_WORKSPACE = 'dev' //Sets the Terraform Workspace
