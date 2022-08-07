@@ -13,7 +13,7 @@
   
   # Fix kubelet IP
   echo "Fixing Kubelet IP#############################################\n"
-  echo 'Environment="KUBELET_EXTRA_ARGS=--node-ip=10.0.0.10"' | sudo tee -a /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+  echo 'Environment="KUBELET_EXTRA_ARGS=--node-ip=$(hostname -i)"' | sudo tee -a /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
   
   # Configure flannel
   echo "Install the flannel network fabric#############################################\n"
