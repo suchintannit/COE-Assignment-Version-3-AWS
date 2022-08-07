@@ -104,7 +104,7 @@ resource "aws_instance" "worker2" {
   
 }
 
-
+#replace the above with your aws key
 #copy the public ip of all somewhere it is required in future.
 
 output "instance_public_ip_master" {
